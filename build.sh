@@ -15,13 +15,15 @@ if [[ "${SHOULD_BUILD}" == "yes" ]]; then
   export NODE_OPTIONS="--max-old-space-size=8192"
 
   npm run monaco-compile-check
-  npm run valid-layers-check
 
 
-  npm run gulp compile-build-without-mangling
-  npm run gulp compile-extension-media
-  npm run gulp compile-extensions-build
+
+  yarn run buildreact
+  yarn gulp compile-build
+  yarn gulp compile-extension-media
+  yarn gulp compile-extensions-build
   npm run gulp minify-vscode
+
 
   if [[ "${OS_NAME}" == "osx" ]]; then
     # generate Group Policy definitions
