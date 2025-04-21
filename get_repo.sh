@@ -9,7 +9,7 @@ if [[ "${CI_BUILD}" != "no" ]]; then
 fi
 
 # Always fetch and use the latest commit from the main branch of the void repo
-DEFAULT_BRANCH="scratch"  # Change to 'master' if needed
+DEFAULT_BRANCH="main"  # Change to 'master' if needed
 MS_TAG="latest"
 TIME_PATCH=$( printf "%04d" $(($(date +%-j) * 24 + $(date +%-H))) )
 RELEASE_VERSION="${MS_TAG}${TIME_PATCH}"
