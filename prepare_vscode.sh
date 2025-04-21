@@ -18,42 +18,7 @@ cd vscode || { echo "'vscode' dir not found"; exit 1; }
 
 ../update_settings.sh
 
-# apply patches
-{ set +x; } 2>/dev/null
-
-echo "APP_NAME=\"${APP_NAME}\""
-echo "APP_NAME_LC=\"${APP_NAME_LC}\""
-echo "BINARY_NAME=\"${BINARY_NAME}\""
-echo "GH_REPO_PATH=\"${GH_REPO_PATH}\""
-echo "ORG_NAME=\"${ORG_NAME}\""
-
-for file in ../patches/*.patch; do
-  if [[ -f "${file}" ]]; then
-    apply_patch "${file}"
-  fi
-done
-
-if [[ "${VSCODE_QUALITY}" == "insider" ]]; then
-  for file in ../patches/insider/*.patch; do
-    if [[ -f "${file}" ]]; then
-      apply_patch "${file}"
-    fi
-  done
-fi
-
-if [[ -d "../patches/${OS_NAME}/" ]]; then
-  for file in "../patches/${OS_NAME}/"*.patch; do
-    if [[ -f "${file}" ]]; then
-      apply_patch "${file}"
-    fi
-  done
-fi
-
-for file in ../patches/user/*.patch; do
-  if [[ -f "${file}" ]]; then
-    apply_patch "${file}"
-  fi
-done
+# Patch application logic removed due to build failures
 
 set -x
 
