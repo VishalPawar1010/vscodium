@@ -4,6 +4,14 @@
 ### Windows
 # to run with Bash: "C:\Program Files\Git\bin\bash.exe" ./dev/build.sh
 ###
+LOG_DIR="logs"
+mkdir -p "$LOG_DIR"
+LOG_FILE="$LOG_DIR/build_$(date +'%Y%m%d_%H%M%S').log"
+
+# Redirect all output to the log file
+exec > >(tee -a "$LOG_FILE") 2>&1
+set -ex
+
 
 export APP_NAME="VSCodium"
 export BINARY_NAME="codium"
