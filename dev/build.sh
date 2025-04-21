@@ -4,13 +4,6 @@
 ### Windows
 # to run with Bash: "C:\Program Files\Git\bin\bash.exe" ./dev/build.sh
 ###
-LOG_DIR="logs"
-mkdir -p "$LOG_DIR"
-LOG_FILE="$LOG_DIR/build_$(date +'%Y%m%d_%H%M%S').log"
-
-# Redirect all output to the log file
-exec > >(tee -a "$LOG_FILE") 2>&1
-set -ex
 
 
 export APP_NAME="VSCodium"
@@ -77,7 +70,7 @@ else
   export VSCODE_ARCH="x64"
 fi
 
-export NODE_OPTIONS="--max-old-space-size=8192"
+export NODE_OPTIONS="--max-old-space-size=16384"
 
 echo "OS_NAME=\"${OS_NAME}\""
 echo "SKIP_SOURCE=\"${SKIP_SOURCE}\""

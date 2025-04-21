@@ -12,7 +12,7 @@ if [[ "${SHOULD_BUILD}" == "yes" ]]; then
 
   cd vscode || { echo "'vscode' dir not found"; exit 1; }
 
-  export NODE_OPTIONS="--max-old-space-size=8192"
+  export NODE_OPTIONS="--max-old-space-size=16384"
 
   npm run monaco-compile-check
 
