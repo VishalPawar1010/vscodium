@@ -16,13 +16,11 @@ if [[ "${SHOULD_BUILD}" == "yes" ]]; then
 
   npm run monaco-compile-check
 
-
-
-  yarn run buildreact
-  yarn gulp compile-build
-  yarn gulp compile-extension-media
-  yarn gulp compile-extensions-build
-  npm run gulp minify-vscode
+  npm run buildreact
+  npm run compile-build
+  npm run compile-extension-media
+  npm run compile-extensions-build
+  npm run minify-vscode
 
 
   if [[ "${OS_NAME}" == "osx" ]]; then
