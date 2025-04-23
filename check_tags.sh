@@ -56,7 +56,10 @@ else
     fi
   else
     echo "can't check assets"
-    exit 1
+    echo "No releases found, will trigger build"
+    export SHOULD_BUILD="yes"
+    ASSETS="null"
+    # exit 1
   fi
 fi
 
