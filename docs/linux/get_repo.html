@@ -1,0 +1,355 @@
+<!DOCTYPE html><html><head>
+      <title>get_repo</title>
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      
+      <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.21/dist/katex.min.css">
+      
+      
+      <script src="https://cdn.jsdelivr.net/npm/mermaid@11.5.0/dist/mermaid.min.js"></script>
+      
+      
+      <style>
+      code[class*=language-],pre[class*=language-]{color:#333;background:0 0;font-family:Consolas,"Liberation Mono",Menlo,Courier,monospace;text-align:left;white-space:pre;word-spacing:normal;word-break:normal;word-wrap:normal;line-height:1.4;-moz-tab-size:8;-o-tab-size:8;tab-size:8;-webkit-hyphens:none;-moz-hyphens:none;-ms-hyphens:none;hyphens:none}pre[class*=language-]{padding:.8em;overflow:auto;border-radius:3px;background:#f5f5f5}:not(pre)>code[class*=language-]{padding:.1em;border-radius:.3em;white-space:normal;background:#f5f5f5}.token.blockquote,.token.comment{color:#969896}.token.cdata{color:#183691}.token.doctype,.token.macro.property,.token.punctuation,.token.variable{color:#333}.token.builtin,.token.important,.token.keyword,.token.operator,.token.rule{color:#a71d5d}.token.attr-value,.token.regex,.token.string,.token.url{color:#183691}.token.atrule,.token.boolean,.token.code,.token.command,.token.constant,.token.entity,.token.number,.token.property,.token.symbol{color:#0086b3}.token.prolog,.token.selector,.token.tag{color:#63a35c}.token.attr-name,.token.class,.token.class-name,.token.function,.token.id,.token.namespace,.token.pseudo-class,.token.pseudo-element,.token.url-reference .token.variable{color:#795da3}.token.entity{cursor:help}.token.title,.token.title .token.punctuation{font-weight:700;color:#1d3e81}.token.list{color:#ed6a43}.token.inserted{background-color:#eaffea;color:#55a532}.token.deleted{background-color:#ffecec;color:#bd2c00}.token.bold{font-weight:700}.token.italic{font-style:italic}.language-json .token.property{color:#183691}.language-markup .token.tag .token.punctuation{color:#333}.language-css .token.function,code.language-css{color:#0086b3}.language-yaml .token.atrule{color:#63a35c}code.language-yaml{color:#183691}.language-ruby .token.function{color:#333}.language-markdown .token.url{color:#795da3}.language-makefile .token.symbol{color:#795da3}.language-makefile .token.variable{color:#183691}.language-makefile .token.builtin{color:#0086b3}.language-bash .token.keyword{color:#0086b3}pre[data-line]{position:relative;padding:1em 0 1em 3em}pre[data-line] .line-highlight-wrapper{position:absolute;top:0;left:0;background-color:transparent;display:block;width:100%}pre[data-line] .line-highlight{position:absolute;left:0;right:0;padding:inherit 0;margin-top:1em;background:hsla(24,20%,50%,.08);background:linear-gradient(to right,hsla(24,20%,50%,.1) 70%,hsla(24,20%,50%,0));pointer-events:none;line-height:inherit;white-space:pre}pre[data-line] .line-highlight:before,pre[data-line] .line-highlight[data-end]:after{content:attr(data-start);position:absolute;top:.4em;left:.6em;min-width:1em;padding:0 .5em;background-color:hsla(24,20%,50%,.4);color:#f4f1ef;font:bold 65%/1.5 sans-serif;text-align:center;vertical-align:.3em;border-radius:999px;text-shadow:none;box-shadow:0 1px #fff}pre[data-line] .line-highlight[data-end]:after{content:attr(data-end);top:auto;bottom:.4em}html body{font-family:'Helvetica Neue',Helvetica,'Segoe UI',Arial,freesans,sans-serif;font-size:16px;line-height:1.6;color:#333;background-color:#fff;overflow:initial;box-sizing:border-box;word-wrap:break-word}html body>:first-child{margin-top:0}html body h1,html body h2,html body h3,html body h4,html body h5,html body h6{line-height:1.2;margin-top:1em;margin-bottom:16px;color:#000}html body h1{font-size:2.25em;font-weight:300;padding-bottom:.3em}html body h2{font-size:1.75em;font-weight:400;padding-bottom:.3em}html body h3{font-size:1.5em;font-weight:500}html body h4{font-size:1.25em;font-weight:600}html body h5{font-size:1.1em;font-weight:600}html body h6{font-size:1em;font-weight:600}html body h1,html body h2,html body h3,html body h4,html body h5{font-weight:600}html body h5{font-size:1em}html body h6{color:#5c5c5c}html body strong{color:#000}html body del{color:#5c5c5c}html body a:not([href]){color:inherit;text-decoration:none}html body a{color:#08c;text-decoration:none}html body a:hover{color:#00a3f5;text-decoration:none}html body img{max-width:100%}html body>p{margin-top:0;margin-bottom:16px;word-wrap:break-word}html body>ol,html body>ul{margin-bottom:16px}html body ol,html body ul{padding-left:2em}html body ol.no-list,html body ul.no-list{padding:0;list-style-type:none}html body ol ol,html body ol ul,html body ul ol,html body ul ul{margin-top:0;margin-bottom:0}html body li{margin-bottom:0}html body li.task-list-item{list-style:none}html body li>p{margin-top:0;margin-bottom:0}html body .task-list-item-checkbox{margin:0 .2em .25em -1.8em;vertical-align:middle}html body .task-list-item-checkbox:hover{cursor:pointer}html body blockquote{margin:16px 0;font-size:inherit;padding:0 15px;color:#5c5c5c;background-color:#f0f0f0;border-left:4px solid #d6d6d6}html body blockquote>:first-child{margin-top:0}html body blockquote>:last-child{margin-bottom:0}html body hr{height:4px;margin:32px 0;background-color:#d6d6d6;border:0 none}html body table{margin:10px 0 15px 0;border-collapse:collapse;border-spacing:0;display:block;width:100%;overflow:auto;word-break:normal;word-break:keep-all}html body table th{font-weight:700;color:#000}html body table td,html body table th{border:1px solid #d6d6d6;padding:6px 13px}html body dl{padding:0}html body dl dt{padding:0;margin-top:16px;font-size:1em;font-style:italic;font-weight:700}html body dl dd{padding:0 16px;margin-bottom:16px}html body code{font-family:Menlo,Monaco,Consolas,'Courier New',monospace;font-size:.85em;color:#000;background-color:#f0f0f0;border-radius:3px;padding:.2em 0}html body code::after,html body code::before{letter-spacing:-.2em;content:'\00a0'}html body pre>code{padding:0;margin:0;word-break:normal;white-space:pre;background:0 0;border:0}html body .highlight{margin-bottom:16px}html body .highlight pre,html body pre{padding:1em;overflow:auto;line-height:1.45;border:#d6d6d6;border-radius:3px}html body .highlight pre{margin-bottom:0;word-break:normal}html body pre code,html body pre tt{display:inline;max-width:initial;padding:0;margin:0;overflow:initial;line-height:inherit;word-wrap:normal;background-color:transparent;border:0}html body pre code:after,html body pre code:before,html body pre tt:after,html body pre tt:before{content:normal}html body blockquote,html body dl,html body ol,html body p,html body pre,html body ul{margin-top:0;margin-bottom:16px}html body kbd{color:#000;border:1px solid #d6d6d6;border-bottom:2px solid #c7c7c7;padding:2px 4px;background-color:#f0f0f0;border-radius:3px}@media print{html body{background-color:#fff}html body h1,html body h2,html body h3,html body h4,html body h5,html body h6{color:#000;page-break-after:avoid}html body blockquote{color:#5c5c5c}html body pre{page-break-inside:avoid}html body table{display:table}html body img{display:block;max-width:100%;max-height:100%}html body code,html body pre{word-wrap:break-word;white-space:pre}}.markdown-preview{width:100%;height:100%;box-sizing:border-box}.markdown-preview ul{list-style:disc}.markdown-preview ul ul{list-style:circle}.markdown-preview ul ul ul{list-style:square}.markdown-preview ol{list-style:decimal}.markdown-preview ol ol,.markdown-preview ul ol{list-style-type:lower-roman}.markdown-preview ol ol ol,.markdown-preview ol ul ol,.markdown-preview ul ol ol,.markdown-preview ul ul ol{list-style-type:lower-alpha}.markdown-preview .newpage,.markdown-preview .pagebreak{page-break-before:always}.markdown-preview pre.line-numbers{position:relative;padding-left:3.8em;counter-reset:linenumber}.markdown-preview pre.line-numbers>code{position:relative}.markdown-preview pre.line-numbers .line-numbers-rows{position:absolute;pointer-events:none;top:1em;font-size:100%;left:0;width:3em;letter-spacing:-1px;border-right:1px solid #999;-webkit-user-select:none;-moz-user-select:none;-ms-user-select:none;user-select:none}.markdown-preview pre.line-numbers .line-numbers-rows>span{pointer-events:none;display:block;counter-increment:linenumber}.markdown-preview pre.line-numbers .line-numbers-rows>span:before{content:counter(linenumber);color:#999;display:block;padding-right:.8em;text-align:right}.markdown-preview .mathjax-exps .MathJax_Display{text-align:center!important}.markdown-preview:not([data-for=preview]) .code-chunk .code-chunk-btn-group{display:none}.markdown-preview:not([data-for=preview]) .code-chunk .status{display:none}.markdown-preview:not([data-for=preview]) .code-chunk .output-div{margin-bottom:16px}.markdown-preview .md-toc{padding:0}.markdown-preview .md-toc .md-toc-link-wrapper .md-toc-link{display:inline;padding:.25rem 0}.markdown-preview .md-toc .md-toc-link-wrapper .md-toc-link div,.markdown-preview .md-toc .md-toc-link-wrapper .md-toc-link p{display:inline}.markdown-preview .md-toc .md-toc-link-wrapper.highlighted .md-toc-link{font-weight:800}.scrollbar-style::-webkit-scrollbar{width:8px}.scrollbar-style::-webkit-scrollbar-track{border-radius:10px;background-color:transparent}.scrollbar-style::-webkit-scrollbar-thumb{border-radius:5px;background-color:rgba(150,150,150,.66);border:4px solid rgba(150,150,150,.66);background-clip:content-box}html body[for=html-export]:not([data-presentation-mode]){position:relative;width:100%;height:100%;top:0;left:0;margin:0;padding:0;overflow:auto}html body[for=html-export]:not([data-presentation-mode]) .markdown-preview{position:relative;top:0;min-height:100vh}@media screen and (min-width:914px){html body[for=html-export]:not([data-presentation-mode]) .markdown-preview{padding:2em calc(50% - 457px + 2em)}}@media screen and (max-width:914px){html body[for=html-export]:not([data-presentation-mode]) .markdown-preview{padding:2em}}@media screen and (max-width:450px){html body[for=html-export]:not([data-presentation-mode]) .markdown-preview{font-size:14px!important;padding:1em}}@media print{html body[for=html-export]:not([data-presentation-mode]) #sidebar-toc-btn{display:none}}html body[for=html-export]:not([data-presentation-mode]) #sidebar-toc-btn{position:fixed;bottom:8px;left:8px;font-size:28px;cursor:pointer;color:inherit;z-index:99;width:32px;text-align:center;opacity:.4}html body[for=html-export]:not([data-presentation-mode])[html-show-sidebar-toc] #sidebar-toc-btn{opacity:1}html body[for=html-export]:not([data-presentation-mode])[html-show-sidebar-toc] .md-sidebar-toc{position:fixed;top:0;left:0;width:300px;height:100%;padding:32px 0 48px 0;font-size:14px;box-shadow:0 0 4px rgba(150,150,150,.33);box-sizing:border-box;overflow:auto;background-color:inherit}html body[for=html-export]:not([data-presentation-mode])[html-show-sidebar-toc] .md-sidebar-toc::-webkit-scrollbar{width:8px}html body[for=html-export]:not([data-presentation-mode])[html-show-sidebar-toc] .md-sidebar-toc::-webkit-scrollbar-track{border-radius:10px;background-color:transparent}html body[for=html-export]:not([data-presentation-mode])[html-show-sidebar-toc] .md-sidebar-toc::-webkit-scrollbar-thumb{border-radius:5px;background-color:rgba(150,150,150,.66);border:4px solid rgba(150,150,150,.66);background-clip:content-box}html body[for=html-export]:not([data-presentation-mode])[html-show-sidebar-toc] .md-sidebar-toc a{text-decoration:none}html body[for=html-export]:not([data-presentation-mode])[html-show-sidebar-toc] .md-sidebar-toc .md-toc{padding:0 16px}html body[for=html-export]:not([data-presentation-mode])[html-show-sidebar-toc] .md-sidebar-toc .md-toc .md-toc-link-wrapper .md-toc-link{display:inline;padding:.25rem 0}html body[for=html-export]:not([data-presentation-mode])[html-show-sidebar-toc] .md-sidebar-toc .md-toc .md-toc-link-wrapper .md-toc-link div,html body[for=html-export]:not([data-presentation-mode])[html-show-sidebar-toc] .md-sidebar-toc .md-toc .md-toc-link-wrapper .md-toc-link p{display:inline}html body[for=html-export]:not([data-presentation-mode])[html-show-sidebar-toc] .md-sidebar-toc .md-toc .md-toc-link-wrapper.highlighted .md-toc-link{font-weight:800}html body[for=html-export]:not([data-presentation-mode])[html-show-sidebar-toc] .markdown-preview{left:300px;width:calc(100% - 300px);padding:2em calc(50% - 457px - 300px / 2);margin:0;box-sizing:border-box}@media screen and (max-width:1274px){html body[for=html-export]:not([data-presentation-mode])[html-show-sidebar-toc] .markdown-preview{padding:2em}}@media screen and (max-width:450px){html body[for=html-export]:not([data-presentation-mode])[html-show-sidebar-toc] .markdown-preview{width:100%}}html body[for=html-export]:not([data-presentation-mode]):not([html-show-sidebar-toc]) .markdown-preview{left:50%;transform:translateX(-50%)}html body[for=html-export]:not([data-presentation-mode]):not([html-show-sidebar-toc]) .md-sidebar-toc{display:none}
+/* Please visit the URL below for more information: */
+/*   https://shd101wyy.github.io/markdown-preview-enhanced/#/customize-css */
+
+      </style>
+      <!-- The content below will be included at the end of the <head> element. --><script type="text/javascript">
+  document.addEventListener("DOMContentLoaded", function () {
+    // your code here
+  });
+</script></head><body for="html-export">
+    
+    
+      <div class="crossnote markdown-preview  ">
+      
+<h1 id="get_reposh-documentation">get_repo.sh Documentation </h1>
+<h2 id="overview">Overview </h2>
+<p>The <code>get_repo.sh</code> script is a fundamental component of the VSCodium build pipeline that handles repository initialization, source code synchronization, and version management. It ensures proper setup of the VSCodium source tree and maintains version consistency across the build process.</p>
+<h2 id="table-of-contents">Table of Contents </h2>
+<ul>
+<li><a href="#purpose">Purpose</a></li>
+<li><a href="#script-analysis">Script Analysis</a></li>
+<li><a href="#workflow-integration">Workflow Integration</a></li>
+<li><a href="#version-management">Version Management</a></li>
+<li><a href="#error-handling">Error Handling</a></li>
+<li><a href="#security-considerations">Security Considerations</a></li>
+<li><a href="#best-practices">Best Practices</a></li>
+</ul>
+<h2 id="purpose">Purpose </h2>
+<p>The script serves three main purposes:</p>
+<ol>
+<li><strong>CI Environment Setup</strong>: Configures Git for safe directory access in CI environments</li>
+<li><strong>Repository Initialization</strong>: Sets up and initializes the VSCodium source tree</li>
+<li><strong>Version Management</strong>: Handles version tracking and release version generation</li>
+</ol>
+<div class="mermaid">graph TD
+    A[get_repo.sh] --&gt; B[CI Environment Setup]
+    A --&gt; C[Repository Initialization]
+    A --&gt; D[Version Management]
+    
+    B --&gt; E[Safe Directory Config]
+    B --&gt; F[Git Configuration]
+    
+    C --&gt; G[Repo Setup]
+    C --&gt; H[Source Fetch]
+    
+    D --&gt; I[Version Generation]
+    D --&gt; J[Environment Export]
+</div><h2 id="script-analysis">Script Analysis </h2>
+<h3 id="1-ci-environment-setup">1. CI Environment Setup </h3>
+<div class="mermaid">sequenceDiagram
+    participant S as Script
+    participant G as Git
+    participant CI as CI Environment
+    
+    S-&gt;&gt;CI: Check CI_BUILD
+    CI--&gt;&gt;S: Environment Status
+    S-&gt;&gt;G: Configure Safe Directory
+    G--&gt;&gt;S: Configuration Applied
+</div><h4 id="code-analysis">Code Analysis </h4>
+<pre data-role="codeBlock" data-info="bash" class="language-bash bash"><code><span class="token keyword keyword-if">if</span> <span class="token punctuation">[</span><span class="token punctuation">[</span> <span class="token string">"<span class="token variable">${CI_BUILD}</span>"</span> <span class="token operator">!=</span> <span class="token string">"no"</span> <span class="token punctuation">]</span><span class="token punctuation">]</span><span class="token punctuation">;</span> <span class="token keyword keyword-then">then</span>
+  <span class="token function">git</span> config <span class="token parameter variable">--global</span> <span class="token parameter variable">--add</span> safe.directory <span class="token string">"/__w/<span class="token variable"><span class="token variable">$(</span> <span class="token builtin class-name">echo</span> <span class="token string">"<span class="token variable">${GITHUB_REPOSITORY}</span>"</span> <span class="token operator">|</span> <span class="token function">awk</span> <span class="token string">'{print tolower($0)}'</span> <span class="token variable">)</span></span>"</span>
+<span class="token keyword keyword-fi">fi</span>
+</code></pre><ul>
+<li><strong>Purpose</strong>: Configures Git safe directory in CI environment</li>
+<li><strong>Components</strong>:
+<ul>
+<li>CI_BUILD environment variable check</li>
+<li>Safe directory configuration</li>
+<li>Repository path normalization</li>
+</ul>
+</li>
+<li><strong>Security</strong>: Ensures secure repository access in CI</li>
+</ul>
+<h3 id="2-repository-initialization">2. Repository Initialization </h3>
+<div class="mermaid">sequenceDiagram
+    participant S as Script
+    participant G as Git
+    participant R as Remote Repo
+    
+    S-&gt;&gt;G: Initialize Repository
+    G--&gt;&gt;S: Repo Created
+    S-&gt;&gt;G: Add Remote
+    G--&gt;&gt;S: Remote Added
+    S-&gt;&gt;R: Fetch Source
+    R--&gt;&gt;S: Source Retrieved
+    S-&gt;&gt;G: Checkout Commit
+    G--&gt;&gt;S: Checkout Complete
+</div><h4 id="code-analysis-1">Code Analysis </h4>
+<pre data-role="codeBlock" data-info="bash" class="language-bash bash"><code><span class="token assign-left variable">DEFAULT_BRANCH</span><span class="token operator">=</span><span class="token string">"main"</span>
+<span class="token assign-left variable">MS_TAG</span><span class="token operator">=</span><span class="token string">"latest"</span>
+<span class="token assign-left variable">TIME_PATCH</span><span class="token operator">=</span><span class="token variable"><span class="token variable">$(</span> <span class="token builtin class-name">printf</span> <span class="token string">"%04d"</span> <span class="token punctuation">$((</span><span class="token punctuation">$(</span>date +%-j<span class="token punctuation">)</span> * <span class="token number">24</span> + <span class="token punctuation">$(</span>date +%-H<span class="token punctuation">)</span><span class="token variable">)</span></span><span class="token punctuation">)</span> <span class="token punctuation">)</span>
+<span class="token assign-left variable">RELEASE_VERSION</span><span class="token operator">=</span><span class="token string">"<span class="token variable">${MS_TAG}</span><span class="token variable">${TIME_PATCH}</span>"</span>
+
+<span class="token function">mkdir</span> <span class="token parameter variable">-p</span> vscode
+<span class="token builtin class-name">cd</span> vscode <span class="token operator">||</span> <span class="token punctuation">{</span> <span class="token builtin class-name">echo</span> <span class="token string">"'vscode' dir not found"</span><span class="token punctuation">;</span> <span class="token builtin class-name">exit</span> <span class="token number">1</span><span class="token punctuation">;</span> <span class="token punctuation">}</span>
+<span class="token function">git</span> init <span class="token parameter variable">-q</span>
+<span class="token function">git</span> remote <span class="token function">add</span> origin https://github.com/VishalPawar1010/void.git
+<span class="token function">git</span> fetch <span class="token parameter variable">--depth</span> <span class="token number">1</span> origin <span class="token variable">${DEFAULT_BRANCH}</span>
+<span class="token function">git</span> checkout FETCH_HEAD
+</code></pre><ul>
+<li><strong>Purpose</strong>: Sets up and initializes the VSCodium source tree</li>
+<li><strong>Components</strong>:
+<ul>
+<li>Directory creation</li>
+<li>Git repository initialization</li>
+<li>Remote repository configuration</li>
+<li>Source code fetching</li>
+<li>Commit checkout</li>
+</ul>
+</li>
+<li><strong>Process Flow</strong>:
+<ol>
+<li>Create vscode directory</li>
+<li>Initialize Git repository</li>
+<li>Add remote origin</li>
+<li>Fetch source code</li>
+<li>Checkout latest commit</li>
+</ol>
+</li>
+</ul>
+<h3 id="3-version-management">3. Version Management </h3>
+<div class="mermaid">sequenceDiagram
+    participant S as Script
+    participant G as Git
+    participant E as Environment
+    
+    S-&gt;&gt;G: Get Commit Hash
+    G--&gt;&gt;S: MS_COMMIT
+    S-&gt;&gt;E: Export Variables
+    E--&gt;&gt;S: Variables Set
+</div><h4 id="code-analysis-2">Code Analysis </h4>
+<pre data-role="codeBlock" data-info="bash" class="language-bash bash"><code><span class="token assign-left variable">MS_COMMIT</span><span class="token operator">=</span><span class="token variable"><span class="token variable">$(</span><span class="token function">git</span> rev-parse HEAD<span class="token variable">)</span></span>
+<span class="token builtin class-name">echo</span> <span class="token string">"Using latest commit: <span class="token variable">$MS_COMMIT</span>"</span>
+<span class="token builtin class-name">echo</span> <span class="token string">"RELEASE_VERSION=<span class="token entity" title="\&quot;">\"</span><span class="token variable">${RELEASE_VERSION}</span><span class="token entity" title="\&quot;">\"</span>"</span>
+<span class="token builtin class-name">echo</span> <span class="token string">"MS_TAG=<span class="token entity" title="\&quot;">\"</span><span class="token variable">${MS_TAG}</span><span class="token entity" title="\&quot;">\"</span>"</span>
+<span class="token builtin class-name">echo</span> <span class="token string">"MS_COMMIT=<span class="token entity" title="\&quot;">\"</span><span class="token variable">${MS_COMMIT}</span><span class="token entity" title="\&quot;">\"</span>"</span>
+
+<span class="token keyword keyword-if">if</span> <span class="token punctuation">[</span><span class="token punctuation">[</span> <span class="token string">"<span class="token variable">${GITHUB_ENV}</span>"</span> <span class="token punctuation">]</span><span class="token punctuation">]</span><span class="token punctuation">;</span> <span class="token keyword keyword-then">then</span>
+  <span class="token builtin class-name">echo</span> <span class="token string">"MS_TAG=<span class="token variable">${MS_TAG}</span>"</span> <span class="token operator">&gt;&gt;</span> <span class="token string">"<span class="token variable">${GITHUB_ENV}</span>"</span>
+  <span class="token builtin class-name">echo</span> <span class="token string">"MS_COMMIT=<span class="token variable">${MS_COMMIT}</span>"</span> <span class="token operator">&gt;&gt;</span> <span class="token string">"<span class="token variable">${GITHUB_ENV}</span>"</span>
+  <span class="token builtin class-name">echo</span> <span class="token string">"RELEASE_VERSION=<span class="token variable">${RELEASE_VERSION}</span>"</span> <span class="token operator">&gt;&gt;</span> <span class="token string">"<span class="token variable">${GITHUB_ENV}</span>"</span>
+<span class="token keyword keyword-fi">fi</span>
+
+<span class="token builtin class-name">export</span> MS_TAG
+<span class="token builtin class-name">export</span> MS_COMMIT
+<span class="token builtin class-name">export</span> RELEASE_VERSION
+</code></pre><ul>
+<li><strong>Purpose</strong>: Manages version information and environment variables</li>
+<li><strong>Components</strong>:
+<ul>
+<li>Commit hash retrieval</li>
+<li>Version string generation</li>
+<li>Environment variable export</li>
+<li>GitHub Actions integration</li>
+</ul>
+</li>
+<li><strong>Version Generation</strong>:
+<ul>
+<li>Uses date-based patch number</li>
+<li>Combines with MS_TAG for release version</li>
+<li>Ensures unique version strings</li>
+</ul>
+</li>
+</ul>
+<h2 id="workflow-integration">Workflow Integration </h2>
+<h3 id="1-input-variables">1. Input Variables </h3>
+<div class="mermaid">graph TD
+    A[Environment Variables] --&gt; B[CI_BUILD]
+    A --&gt; C[GITHUB_REPOSITORY]
+    A --&gt; D[GITHUB_ENV]
+</div><ul>
+<li><strong>CI_BUILD</strong>: Controls CI-specific behavior</li>
+<li><strong>GITHUB_REPOSITORY</strong>: Repository path for safe directory</li>
+<li><strong>GITHUB_ENV</strong>: GitHub Actions environment file</li>
+</ul>
+<h3 id="2-integration-points">2. Integration Points </h3>
+<div class="mermaid">graph LR
+    A[Workflow] --&gt; B[get_repo.sh]
+    B --&gt; C[Source Setup]
+    C --&gt; D[Version Info]
+    D --&gt; E[Build Process]
+</div><ul>
+<li><strong>Trigger</strong>: Build workflow execution</li>
+<li><strong>Output</strong>: Prepared source tree and version info</li>
+<li><strong>Dependencies</strong>: Git configuration</li>
+<li><strong>Next Steps</strong>: Build process initiation</li>
+</ul>
+<h2 id="version-management">Version Management </h2>
+<h3 id="1-version-generation-strategy">1. Version Generation Strategy </h3>
+<div class="mermaid">graph TD
+    A[Version Components] --&gt; B[MS_TAG]
+    A --&gt; C[TIME_PATCH]
+    B --&gt; D[RELEASE_VERSION]
+    C --&gt; D
+</div><ul>
+<li><strong>MS_TAG</strong>: Base version identifier</li>
+<li><strong>TIME_PATCH</strong>: Date-based patch number</li>
+<li><strong>RELEASE_VERSION</strong>: Combined version string</li>
+</ul>
+<h3 id="2-version-tracking">2. Version Tracking </h3>
+<ul>
+<li>Commit hash tracking</li>
+<li>Version string generation</li>
+<li>Environment variable management</li>
+</ul>
+<h2 id="error-handling">Error Handling </h2>
+<h3 id="1-error-scenarios">1. Error Scenarios </h3>
+<div class="mermaid">graph TD
+    A[Error Detection] --&gt; B{Error Type}
+    B --&gt;|Directory| C[Creation Error]
+    B --&gt;|Git Init| D[Initialization Error]
+    B --&gt;|Remote| E[Configuration Error]
+    B --&gt;|Fetch| F[Network Error]
+    
+    C --&gt; G[Error Resolution]
+    D --&gt; G
+    E --&gt; G
+    F --&gt; G
+</div><h3 id="2-error-prevention">2. Error Prevention </h3>
+<ul>
+<li>Directory existence check</li>
+<li>Git operation validation</li>
+<li>Network operation verification</li>
+<li>Environment variable validation</li>
+</ul>
+<h2 id="security-considerations">Security Considerations </h2>
+<h3 id="1-access-control">1. Access Control </h3>
+<ul>
+<li>Safe directory configuration</li>
+<li>Repository access validation</li>
+<li>Secure Git operations</li>
+</ul>
+<h3 id="2-data-protection">2. Data Protection </h3>
+<ul>
+<li>Version information security</li>
+<li>Environment variable management</li>
+<li>Secure repository access</li>
+</ul>
+<h2 id="best-practices">Best Practices </h2>
+<h3 id="1-configuration">1. Configuration </h3>
+<ul>
+<li>Use environment variables</li>
+<li>Validate inputs</li>
+<li>Secure Git operations</li>
+</ul>
+<h3 id="2-error-handling">2. Error Handling </h3>
+<ul>
+<li>Early error detection</li>
+<li>Clear error messages</li>
+<li>Graceful failure handling</li>
+</ul>
+<h3 id="3-performance">3. Performance </h3>
+<ul>
+<li>Minimal Git operations</li>
+<li>Efficient directory management</li>
+<li>Optimized fetch strategy</li>
+</ul>
+<h2 id="common-issues-and-solutions">Common Issues and Solutions </h2>
+<h3 id="1-permission-issues">1. Permission Issues </h3>
+<ul>
+<li><strong>Problem</strong>: Safe directory access denied</li>
+<li><strong>Solution</strong>: Proper CI configuration</li>
+</ul>
+<h3 id="2-network-issues">2. Network Issues </h3>
+<ul>
+<li><strong>Problem</strong>: Repository fetch failures</li>
+<li><strong>Solution</strong>: Retry mechanism</li>
+</ul>
+<h3 id="3-version-conflicts">3. Version Conflicts </h3>
+<ul>
+<li><strong>Problem</strong>: Version string generation issues</li>
+<li><strong>Solution</strong>: Proper time synchronization</li>
+</ul>
+<h2 id="usage-examples">Usage Examples </h2>
+<h3 id="1-basic-usage">1. Basic Usage </h3>
+<pre data-role="codeBlock" data-info="bash" class="language-bash bash"><code><span class="token builtin class-name">export</span> <span class="token assign-left variable">CI_BUILD</span><span class="token operator">=</span>yes
+./get_repo.sh
+</code></pre><h3 id="2-custom-configuration">2. Custom Configuration </h3>
+<pre data-role="codeBlock" data-info="bash" class="language-bash bash"><code><span class="token builtin class-name">export</span> <span class="token assign-left variable">GITHUB_REPOSITORY</span><span class="token operator">=</span>owner/repo
+./get_repo.sh
+</code></pre><h2 id="maintenance">Maintenance </h2>
+<h3 id="1-version-control">1. Version Control </h3>
+<ul>
+<li>Track script changes</li>
+<li>Document modifications</li>
+<li>Test updates</li>
+</ul>
+<h3 id="2-testing">2. Testing </h3>
+<ul>
+<li>CI environment testing</li>
+<li>Version generation testing</li>
+<li>Error case testing</li>
+</ul>
+<hr>
+<p><em>This documentation provides a comprehensive overview of the get_repo.sh script, its functionality, and integration within the VSCodium build pipeline.</em></p>
+
+      </div>
+      
+      
+    
+    
+    <script type="module">
+// TODO: If ZenUML gets integrated into mermaid in the future,
+//      we can remove the following lines.
+
+
+var MERMAID_CONFIG = ({"startOnLoad":false});
+if (typeof MERMAID_CONFIG !== 'undefined') {
+  MERMAID_CONFIG.startOnLoad = false
+  MERMAID_CONFIG.cloneCssStyles = false
+  MERMAID_CONFIG.theme = "default"
+}
+
+mermaid.initialize(MERMAID_CONFIG || {})
+if (typeof(window['Reveal']) !== 'undefined') {
+  function mermaidRevealHelper(event) {
+    var currentSlide = event.currentSlide
+    var diagrams = currentSlide.querySelectorAll('.mermaid')
+    for (var i = 0; i < diagrams.length; i++) {
+      var diagram = diagrams[i]
+      if (!diagram.hasAttribute('data-processed')) {
+        mermaid.init(null, diagram, ()=> {
+          Reveal.slide(event.indexh, event.indexv)
+        })
+      }
+    }
+  }
+  Reveal.addEventListener('slidetransitionend', mermaidRevealHelper)
+  Reveal.addEventListener('ready', mermaidRevealHelper)
+  await mermaid.run({
+    nodes: document.querySelectorAll('.mermaid')
+  })
+} else {
+  await mermaid.run({
+    nodes: document.querySelectorAll('.mermaid')
+  })
+}
+</script>
+    
+    
+    
+  
+    </body></html>
