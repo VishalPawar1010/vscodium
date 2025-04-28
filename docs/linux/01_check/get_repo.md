@@ -16,8 +16,8 @@ The `get_repo.sh` script is a fundamental component of the VSCodium build pipeli
 
 The script serves three main purposes:
 1. **CI Environment Setup**: Configures Git for safe directory access in CI environments
-2. **Repository Initialization**: Sets up and initializes the VSCodium source tree
-3. **Version Management**: Handles version tracking and release version generation
+2. **Repository Initialization**: Sets up and initializes the VSCode source tree from Microsoft's repository
+3. **Version Management**: Handles version tracking and release version generation based on VSCODE_QUALITY
 
 ```mermaid
 graph TD
@@ -71,7 +71,7 @@ fi
 sequenceDiagram
     participant S as Script
     participant G as Git
-    participant R as Remote Repo
+    participant R as Microsoft Repo
     
     S->>G: Initialize Repository
     G-->>S: Repo Created
@@ -85,20 +85,15 @@ sequenceDiagram
 
 #### Code Analysis
 ```bash
-DEFAULT_BRANCH="main"
-MS_TAG="latest"
-TIME_PATCH=$( printf "%04d" $(($(date +%-j) * 24 + $(date +%-H))) )
-RELEASE_VERSION="${MS_TAG}${TIME_PATCH}"
-
 mkdir -p vscode
 cd vscode || { echo "'vscode' dir not found"; exit 1; }
 git init -q
-git remote add origin https://github.com/VishalPawar1010/void.git
-git fetch --depth 1 origin ${DEFAULT_BRANCH}
+git remote add origin https://github.com/Microsoft/vscode.git
+git fetch --depth 1 origin "${MS_COMMIT}"
 git checkout FETCH_HEAD
 ```
 
-- **Purpose**: Sets up and initializes the VSCodium source tree
+- **Purpose**: Sets up and initializes the VSCode source tree from Microsoft's repository
 - **Components**:
   - Directory creation
   - Git repository initialization
@@ -108,50 +103,50 @@ git checkout FETCH_HEAD
 - **Process Flow**:
   1. Create vscode directory
   2. Initialize Git repository
-  3. Add remote origin
-  4. Fetch source code
-  5. Checkout latest commit
+  3. Add Microsoft vscode remote
+  4. Fetch specific commit
+  5. Checkout fetched commit
 
 ### 3. Version Management
 
 ```mermaid
 sequenceDiagram
     participant S as Script
-    participant G as Git
+    participant U as Update API
+    participant J as JSON File
     participant E as Environment
     
-    S->>G: Get Commit Hash
-    G-->>S: MS_COMMIT
+    S->>U: Check VSCODE_LATEST
+    alt Latest Version
+        U-->>S: Update Info
+    else Local Version
+        S->>J: Read JSON
+        J-->>S: Version Info
+    end
     S->>E: Export Variables
     E-->>S: Variables Set
 ```
 
 #### Code Analysis
 ```bash
-MS_COMMIT=$(git rev-parse HEAD)
-echo "Using latest commit: $MS_COMMIT"
-echo "RELEASE_VERSION=\"${RELEASE_VERSION}\""
-echo "MS_TAG=\"${MS_TAG}\""
-echo "MS_COMMIT=\"${MS_COMMIT}\""
-
-if [[ "${GITHUB_ENV}" ]]; then
-  echo "MS_TAG=${MS_TAG}" >> "${GITHUB_ENV}"
-  echo "MS_COMMIT=${MS_COMMIT}" >> "${GITHUB_ENV}"
-  echo "RELEASE_VERSION=${RELEASE_VERSION}" >> "${GITHUB_ENV}"
+if [[ -z "${RELEASE_VERSION}" ]]; then
+  if [[ "${VSCODE_LATEST}" == "yes" ]] || [[ ! -f "./upstream/${VSCODE_QUALITY}.json" ]]; then
+    UPDATE_INFO=$( curl --silent --fail "https://update.code.visualstudio.com/api/update/darwin/${VSCODE_QUALITY}/0000000000000000000000000000000000000000" )
+  else
+    MS_COMMIT=$( jq -r '.commit' "./upstream/${VSCODE_QUALITY}.json" )
+    MS_TAG=$( jq -r '.tag' "./upstream/${VSCODE_QUALITY}.json" )
+  fi
 fi
-
-export MS_TAG
-export MS_COMMIT
-export RELEASE_VERSION
 ```
 
 - **Purpose**: Manages version information and environment variables
 - **Components**:
-  - Commit hash retrieval
-  - Version string generation
+  - VSCODE_QUALITY based version selection
+  - Update API integration
+  - Local JSON file parsing
   - Environment variable export
-  - GitHub Actions integration
 - **Version Generation**:
+  - Supports stable and insider builds
   - Uses date-based patch number
   - Combines with MS_TAG for release version
   - Ensures unique version strings
@@ -165,11 +160,15 @@ graph TD
     A[Environment Variables] --> B[CI_BUILD]
     A --> C[GITHUB_REPOSITORY]
     A --> D[GITHUB_ENV]
+    A --> E[VSCODE_QUALITY]
+    A --> F[VSCODE_LATEST]
 ```
 
 - **CI_BUILD**: Controls CI-specific behavior
 - **GITHUB_REPOSITORY**: Repository path for safe directory
 - **GITHUB_ENV**: GitHub Actions environment file
+- **VSCODE_QUALITY**: Build quality (stable/insider)
+- **VSCODE_LATEST**: Force latest version flag
 
 ### 2. Integration Points
 
@@ -194,18 +193,22 @@ graph LR
 graph TD
     A[Version Components] --> B[MS_TAG]
     A --> C[TIME_PATCH]
-    B --> D[RELEASE_VERSION]
-    C --> D
+    A --> D[VSCODE_QUALITY]
+    B --> E[RELEASE_VERSION]
+    C --> E
+    D --> E
 ```
 
 - **MS_TAG**: Base version identifier
 - **TIME_PATCH**: Date-based patch number
+- **VSCODE_QUALITY**: Build quality (stable/insider)
 - **RELEASE_VERSION**: Combined version string
 
-### 2. Version Tracking
-- Commit hash tracking
-- Version string generation
-- Environment variable management
+### 2. Version Sources
+- Microsoft Update API
+- Local JSON files
+- Environment variables
+- Tag-based lookup
 
 ## Error Handling
 
@@ -215,9 +218,9 @@ graph TD
 graph TD
     A[Error Detection] --> B{Error Type}
     B -->|Directory| C[Creation Error]
-    B -->|Git Init| D[Initialization Error]
-    B -->|Remote| E[Configuration Error]
-    B -->|Fetch| F[Network Error]
+    B -->|Version| D[Format Error]
+    B -->|Tag| E[Lookup Error]
+    B -->|API| F[Network Error]
     
     C --> G[Error Resolution]
     D --> G
@@ -227,7 +230,8 @@ graph TD
 
 ### 2. Error Prevention
 - Directory existence check
-- Git operation validation
+- Version format validation
+- Tag existence verification
 - Network operation verification
 - Environment variable validation
 
@@ -267,24 +271,26 @@ graph TD
 - **Solution**: Proper CI configuration
 
 ### 2. Network Issues
-- **Problem**: Repository fetch failures
-- **Solution**: Retry mechanism
+- **Problem**: Update API fetch failures
+- **Solution**: Fallback to local JSON
 
 ### 3. Version Conflicts
 - **Problem**: Version string generation issues
-- **Solution**: Proper time synchronization
+- **Solution**: Proper quality flag handling
 
 ## Usage Examples
 
 ### 1. Basic Usage
 ```bash
 export CI_BUILD=yes
+export VSCODE_QUALITY=stable
 ./get_repo.sh
 ```
 
 ### 2. Custom Configuration
 ```bash
-export GITHUB_REPOSITORY=owner/repo
+export VSCODE_QUALITY=insider
+export VSCODE_LATEST=yes
 ./get_repo.sh
 ```
 

@@ -41,8 +41,8 @@
 <p>The script serves three main purposes:</p>
 <ol>
 <li><strong>CI Environment Setup</strong>: Configures Git for safe directory access in CI environments</li>
-<li><strong>Repository Initialization</strong>: Sets up and initializes the VSCodium source tree</li>
-<li><strong>Version Management</strong>: Handles version tracking and release version generation</li>
+<li><strong>Repository Initialization</strong>: Sets up and initializes the VSCode source tree from Microsoft's repository</li>
+<li><strong>Version Management</strong>: Handles version tracking and release version generation based on VSCODE_QUALITY</li>
 </ol>
 <div class="mermaid">graph TD
     A[get_repo.sh] --&gt; B[CI Environment Setup]
@@ -87,7 +87,7 @@
 <div class="mermaid">sequenceDiagram
     participant S as Script
     participant G as Git
-    participant R as Remote Repo
+    participant R as Microsoft Repo
     
     S-&gt;&gt;G: Initialize Repository
     G--&gt;&gt;S: Repo Created
@@ -98,19 +98,14 @@
     S-&gt;&gt;G: Checkout Commit
     G--&gt;&gt;S: Checkout Complete
 </div><h4 id="code-analysis-1">Code Analysis </h4>
-<pre data-role="codeBlock" data-info="bash" class="language-bash bash"><code><span class="token assign-left variable">DEFAULT_BRANCH</span><span class="token operator">=</span><span class="token string">"main"</span>
-<span class="token assign-left variable">MS_TAG</span><span class="token operator">=</span><span class="token string">"latest"</span>
-<span class="token assign-left variable">TIME_PATCH</span><span class="token operator">=</span><span class="token variable"><span class="token variable">$(</span> <span class="token builtin class-name">printf</span> <span class="token string">"%04d"</span> <span class="token punctuation">$((</span><span class="token punctuation">$(</span>date +%-j<span class="token punctuation">)</span> * <span class="token number">24</span> + <span class="token punctuation">$(</span>date +%-H<span class="token punctuation">)</span><span class="token variable">)</span></span><span class="token punctuation">)</span> <span class="token punctuation">)</span>
-<span class="token assign-left variable">RELEASE_VERSION</span><span class="token operator">=</span><span class="token string">"<span class="token variable">${MS_TAG}</span><span class="token variable">${TIME_PATCH}</span>"</span>
-
-<span class="token function">mkdir</span> <span class="token parameter variable">-p</span> vscode
+<pre data-role="codeBlock" data-info="bash" class="language-bash bash"><code><span class="token function">mkdir</span> <span class="token parameter variable">-p</span> vscode
 <span class="token builtin class-name">cd</span> vscode <span class="token operator">||</span> <span class="token punctuation">{</span> <span class="token builtin class-name">echo</span> <span class="token string">"'vscode' dir not found"</span><span class="token punctuation">;</span> <span class="token builtin class-name">exit</span> <span class="token number">1</span><span class="token punctuation">;</span> <span class="token punctuation">}</span>
 <span class="token function">git</span> init <span class="token parameter variable">-q</span>
-<span class="token function">git</span> remote <span class="token function">add</span> origin https://github.com/VishalPawar1010/void.git
-<span class="token function">git</span> fetch <span class="token parameter variable">--depth</span> <span class="token number">1</span> origin <span class="token variable">${DEFAULT_BRANCH}</span>
+<span class="token function">git</span> remote <span class="token function">add</span> origin https://github.com/Microsoft/vscode.git
+<span class="token function">git</span> fetch <span class="token parameter variable">--depth</span> <span class="token number">1</span> origin <span class="token string">"<span class="token variable">${MS_COMMIT}</span>"</span>
 <span class="token function">git</span> checkout FETCH_HEAD
 </code></pre><ul>
-<li><strong>Purpose</strong>: Sets up and initializes the VSCodium source tree</li>
+<li><strong>Purpose</strong>: Sets up and initializes the VSCode source tree from Microsoft's repository</li>
 <li><strong>Components</strong>:
 <ul>
 <li>Directory creation</li>
@@ -124,50 +119,50 @@
 <ol>
 <li>Create vscode directory</li>
 <li>Initialize Git repository</li>
-<li>Add remote origin</li>
-<li>Fetch source code</li>
-<li>Checkout latest commit</li>
+<li>Add Microsoft vscode remote</li>
+<li>Fetch specific commit</li>
+<li>Checkout fetched commit</li>
 </ol>
 </li>
 </ul>
 <h3 id="3-version-management">3. Version Management </h3>
 <div class="mermaid">sequenceDiagram
     participant S as Script
-    participant G as Git
+    participant U as Update API
+    participant J as JSON File
     participant E as Environment
     
-    S-&gt;&gt;G: Get Commit Hash
-    G--&gt;&gt;S: MS_COMMIT
+    S-&gt;&gt;U: Check VSCODE_LATEST
+    alt Latest Version
+        U--&gt;&gt;S: Update Info
+    else Local Version
+        S-&gt;&gt;J: Read JSON
+        J--&gt;&gt;S: Version Info
+    end
     S-&gt;&gt;E: Export Variables
     E--&gt;&gt;S: Variables Set
 </div><h4 id="code-analysis-2">Code Analysis </h4>
-<pre data-role="codeBlock" data-info="bash" class="language-bash bash"><code><span class="token assign-left variable">MS_COMMIT</span><span class="token operator">=</span><span class="token variable"><span class="token variable">$(</span><span class="token function">git</span> rev-parse HEAD<span class="token variable">)</span></span>
-<span class="token builtin class-name">echo</span> <span class="token string">"Using latest commit: <span class="token variable">$MS_COMMIT</span>"</span>
-<span class="token builtin class-name">echo</span> <span class="token string">"RELEASE_VERSION=<span class="token entity" title="\&quot;">\"</span><span class="token variable">${RELEASE_VERSION}</span><span class="token entity" title="\&quot;">\"</span>"</span>
-<span class="token builtin class-name">echo</span> <span class="token string">"MS_TAG=<span class="token entity" title="\&quot;">\"</span><span class="token variable">${MS_TAG}</span><span class="token entity" title="\&quot;">\"</span>"</span>
-<span class="token builtin class-name">echo</span> <span class="token string">"MS_COMMIT=<span class="token entity" title="\&quot;">\"</span><span class="token variable">${MS_COMMIT}</span><span class="token entity" title="\&quot;">\"</span>"</span>
-
-<span class="token keyword keyword-if">if</span> <span class="token punctuation">[</span><span class="token punctuation">[</span> <span class="token string">"<span class="token variable">${GITHUB_ENV}</span>"</span> <span class="token punctuation">]</span><span class="token punctuation">]</span><span class="token punctuation">;</span> <span class="token keyword keyword-then">then</span>
-  <span class="token builtin class-name">echo</span> <span class="token string">"MS_TAG=<span class="token variable">${MS_TAG}</span>"</span> <span class="token operator">&gt;&gt;</span> <span class="token string">"<span class="token variable">${GITHUB_ENV}</span>"</span>
-  <span class="token builtin class-name">echo</span> <span class="token string">"MS_COMMIT=<span class="token variable">${MS_COMMIT}</span>"</span> <span class="token operator">&gt;&gt;</span> <span class="token string">"<span class="token variable">${GITHUB_ENV}</span>"</span>
-  <span class="token builtin class-name">echo</span> <span class="token string">"RELEASE_VERSION=<span class="token variable">${RELEASE_VERSION}</span>"</span> <span class="token operator">&gt;&gt;</span> <span class="token string">"<span class="token variable">${GITHUB_ENV}</span>"</span>
+<pre data-role="codeBlock" data-info="bash" class="language-bash bash"><code><span class="token keyword keyword-if">if</span> <span class="token punctuation">[</span><span class="token punctuation">[</span> <span class="token parameter variable">-z</span> <span class="token string">"<span class="token variable">${RELEASE_VERSION}</span>"</span> <span class="token punctuation">]</span><span class="token punctuation">]</span><span class="token punctuation">;</span> <span class="token keyword keyword-then">then</span>
+  <span class="token keyword keyword-if">if</span> <span class="token punctuation">[</span><span class="token punctuation">[</span> <span class="token string">"<span class="token variable">${VSCODE_LATEST}</span>"</span> <span class="token operator">==</span> <span class="token string">"yes"</span> <span class="token punctuation">]</span><span class="token punctuation">]</span> <span class="token operator">||</span> <span class="token punctuation">[</span><span class="token punctuation">[</span> <span class="token operator">!</span> <span class="token parameter variable">-f</span> <span class="token string">"./upstream/<span class="token variable">${VSCODE_QUALITY}</span>.json"</span> <span class="token punctuation">]</span><span class="token punctuation">]</span><span class="token punctuation">;</span> <span class="token keyword keyword-then">then</span>
+    <span class="token assign-left variable">UPDATE_INFO</span><span class="token operator">=</span><span class="token variable"><span class="token variable">$(</span> <span class="token function">curl</span> <span class="token parameter variable">--silent</span> <span class="token parameter variable">--fail</span> <span class="token string">"https://update.code.visualstudio.com/api/update/darwin/<span class="token variable">${VSCODE_QUALITY}</span>/0000000000000000000000000000000000000000"</span> <span class="token variable">)</span></span>
+  <span class="token keyword keyword-else">else</span>
+    <span class="token assign-left variable">MS_COMMIT</span><span class="token operator">=</span><span class="token variable"><span class="token variable">$(</span> jq <span class="token parameter variable">-r</span> <span class="token string">'.commit'</span> <span class="token string">"./upstream/<span class="token variable">${VSCODE_QUALITY}</span>.json"</span> <span class="token variable">)</span></span>
+    <span class="token assign-left variable">MS_TAG</span><span class="token operator">=</span><span class="token variable"><span class="token variable">$(</span> jq <span class="token parameter variable">-r</span> <span class="token string">'.tag'</span> <span class="token string">"./upstream/<span class="token variable">${VSCODE_QUALITY}</span>.json"</span> <span class="token variable">)</span></span>
+  <span class="token keyword keyword-fi">fi</span>
 <span class="token keyword keyword-fi">fi</span>
-
-<span class="token builtin class-name">export</span> MS_TAG
-<span class="token builtin class-name">export</span> MS_COMMIT
-<span class="token builtin class-name">export</span> RELEASE_VERSION
 </code></pre><ul>
 <li><strong>Purpose</strong>: Manages version information and environment variables</li>
 <li><strong>Components</strong>:
 <ul>
-<li>Commit hash retrieval</li>
-<li>Version string generation</li>
+<li>VSCODE_QUALITY based version selection</li>
+<li>Update API integration</li>
+<li>Local JSON file parsing</li>
 <li>Environment variable export</li>
-<li>GitHub Actions integration</li>
 </ul>
 </li>
 <li><strong>Version Generation</strong>:
 <ul>
+<li>Supports stable and insider builds</li>
 <li>Uses date-based patch number</li>
 <li>Combines with MS_TAG for release version</li>
 <li>Ensures unique version strings</li>
@@ -180,10 +175,14 @@
     A[Environment Variables] --&gt; B[CI_BUILD]
     A --&gt; C[GITHUB_REPOSITORY]
     A --&gt; D[GITHUB_ENV]
+    A --&gt; E[VSCODE_QUALITY]
+    A --&gt; F[VSCODE_LATEST]
 </div><ul>
 <li><strong>CI_BUILD</strong>: Controls CI-specific behavior</li>
 <li><strong>GITHUB_REPOSITORY</strong>: Repository path for safe directory</li>
 <li><strong>GITHUB_ENV</strong>: GitHub Actions environment file</li>
+<li><strong>VSCODE_QUALITY</strong>: Build quality (stable/insider)</li>
+<li><strong>VSCODE_LATEST</strong>: Force latest version flag</li>
 </ul>
 <h3 id="2-integration-points">2. Integration Points </h3>
 <div class="mermaid">graph LR
@@ -202,27 +201,31 @@
 <div class="mermaid">graph TD
     A[Version Components] --&gt; B[MS_TAG]
     A --&gt; C[TIME_PATCH]
-    B --&gt; D[RELEASE_VERSION]
-    C --&gt; D
+    A --&gt; D[VSCODE_QUALITY]
+    B --&gt; E[RELEASE_VERSION]
+    C --&gt; E
+    D --&gt; E
 </div><ul>
 <li><strong>MS_TAG</strong>: Base version identifier</li>
 <li><strong>TIME_PATCH</strong>: Date-based patch number</li>
+<li><strong>VSCODE_QUALITY</strong>: Build quality (stable/insider)</li>
 <li><strong>RELEASE_VERSION</strong>: Combined version string</li>
 </ul>
-<h3 id="2-version-tracking">2. Version Tracking </h3>
+<h3 id="2-version-sources">2. Version Sources </h3>
 <ul>
-<li>Commit hash tracking</li>
-<li>Version string generation</li>
-<li>Environment variable management</li>
+<li>Microsoft Update API</li>
+<li>Local JSON files</li>
+<li>Environment variables</li>
+<li>Tag-based lookup</li>
 </ul>
 <h2 id="error-handling">Error Handling </h2>
 <h3 id="1-error-scenarios">1. Error Scenarios </h3>
 <div class="mermaid">graph TD
     A[Error Detection] --&gt; B{Error Type}
     B --&gt;|Directory| C[Creation Error]
-    B --&gt;|Git Init| D[Initialization Error]
-    B --&gt;|Remote| E[Configuration Error]
-    B --&gt;|Fetch| F[Network Error]
+    B --&gt;|Version| D[Format Error]
+    B --&gt;|Tag| E[Lookup Error]
+    B --&gt;|API| F[Network Error]
     
     C --&gt; G[Error Resolution]
     D --&gt; G
@@ -231,7 +234,8 @@
 </div><h3 id="2-error-prevention">2. Error Prevention </h3>
 <ul>
 <li>Directory existence check</li>
-<li>Git operation validation</li>
+<li>Version format validation</li>
+<li>Tag existence verification</li>
 <li>Network operation verification</li>
 <li>Environment variable validation</li>
 </ul>
@@ -275,20 +279,22 @@
 </ul>
 <h3 id="2-network-issues">2. Network Issues </h3>
 <ul>
-<li><strong>Problem</strong>: Repository fetch failures</li>
-<li><strong>Solution</strong>: Retry mechanism</li>
+<li><strong>Problem</strong>: Update API fetch failures</li>
+<li><strong>Solution</strong>: Fallback to local JSON</li>
 </ul>
 <h3 id="3-version-conflicts">3. Version Conflicts </h3>
 <ul>
 <li><strong>Problem</strong>: Version string generation issues</li>
-<li><strong>Solution</strong>: Proper time synchronization</li>
+<li><strong>Solution</strong>: Proper quality flag handling</li>
 </ul>
 <h2 id="usage-examples">Usage Examples </h2>
 <h3 id="1-basic-usage">1. Basic Usage </h3>
 <pre data-role="codeBlock" data-info="bash" class="language-bash bash"><code><span class="token builtin class-name">export</span> <span class="token assign-left variable">CI_BUILD</span><span class="token operator">=</span>yes
+<span class="token builtin class-name">export</span> <span class="token assign-left variable">VSCODE_QUALITY</span><span class="token operator">=</span>stable
 ./get_repo.sh
 </code></pre><h3 id="2-custom-configuration">2. Custom Configuration </h3>
-<pre data-role="codeBlock" data-info="bash" class="language-bash bash"><code><span class="token builtin class-name">export</span> <span class="token assign-left variable">GITHUB_REPOSITORY</span><span class="token operator">=</span>owner/repo
+<pre data-role="codeBlock" data-info="bash" class="language-bash bash"><code><span class="token builtin class-name">export</span> <span class="token assign-left variable">VSCODE_QUALITY</span><span class="token operator">=</span>insider
+<span class="token builtin class-name">export</span> <span class="token assign-left variable">VSCODE_LATEST</span><span class="token operator">=</span>yes
 ./get_repo.sh
 </code></pre><h2 id="maintenance">Maintenance </h2>
 <h3 id="1-version-control">1. Version Control </h3>
