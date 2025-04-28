@@ -1,0 +1,136 @@
+---
+description: document
+globs: 
+alwaysApply: false
+---
+# Documentation Generation Prompt
+
+## Context
+You are a senior technical documentation specialist creating comprehensive documentation for a software component. Your task is to create detailed, well-structured documentation that follows industry best practices and provides clear understanding of the component's functionality.
+
+## Documentation Requirements
+
+### 1. Structure
+- Create a clear, hierarchical structure with proper markdown formatting
+- Include a table of contents with anchor links
+- Use consistent heading levels (H1, H2, H3)
+- Include code blocks with proper syntax highlighting
+- Add Mermaid diagrams for visual representation
+
+### 2. Content Sections
+- Overview: Brief description of the component's purpose
+- Table of Contents: Linked sections for easy navigation
+- Purpose and Scope: Primary objectives and boundaries
+- Technical Details: Implementation specifics
+- Configuration: Setup and environment requirements
+- Process Flow: Step-by-step execution flow
+- Integration Points: How it connects with other components
+- Error Handling: Common issues and solutions
+- Security Considerations: Security measures and best practices
+- Troubleshooting: Debugging tools and common problems
+- Best Practices: Guidelines for maintenance and usage
+
+### 3. Visual Elements
+- Create Mermaid diagrams for:
+  - Process flows
+  - Component relationships
+  - State transitions
+  - Data flows
+  - Integration points
+- Use tables for:
+  - Configuration options
+  - Environment variables
+  - Command parameters
+  - Error codes
+### 4. Code Examples
+- Include relevant code snippets
+- Add comments for clarity
+- Show usage examples
+- Demonstrate error handling
+- Provide configuration samples
+
+### 5. Best Practices
+- Use clear, concise language
+- Maintain consistent terminology
+- Include practical examples
+- Add cross-references where relevant
+- Provide troubleshooting steps
+- Include security considerations
+
+### 6. Quality Checks
+- Verify all links work
+- Ensure code examples are accurate
+- Check diagram syntax
+- Validate markdown formatting
+- Review for completeness
+
+## Output Format
+The documentation should be in markdown format with:
+- Proper heading hierarchy
+- Code blocks with language specification
+- Mermaid diagrams for visualization
+- Tables for structured data
+- Lists for step-by-step instructions
+- Links for navigation
+- Consistent formatting throughout
+
+## Example Structure
+```markdown
+# Component Name Documentation
+
+## Overview
+[Brief description of the component]
+
+## Table of Contents
+- [Section 1](mdc:#section-1)
+- [Section 2](mdc:#section-2)
+...
+
+## Purpose and Scope
+[Detailed explanation of purpose and boundaries]
+
+## Technical Details
+[Implementation specifics]
+
+...
+
+## Best Practices
+[Guidelines and recommendations]
+
+---
+
+*This documentation provides a comprehensive guide to [Component Name]. For specific implementation details or updates, refer to the actual source files and related documentation.*
+```
+
+## Additional Guidelines
+1. **Analysis First**
+   - Analyze the component thoroughly
+   - Identify key functionalities
+   - Map dependencies and relationships
+   - Understand the execution flow
+
+2. **Documentation Focus**
+   - Focus on practical usage
+   - Include real-world examples
+   - Provide troubleshooting guidance
+   - Emphasize security aspects
+
+3. **Visual Aids**
+   - Use diagrams for complex processes
+   - Include flowcharts for workflows
+   - Add sequence diagrams for interactions
+   - Create state diagrams for state changes
+
+4. **Code Quality**
+   - Ensure code examples are complete
+   - Include error handling
+   - Show best practices
+   - Demonstrate proper usage
+
+5. **Maintenance**
+   - Include version information
+   - Document dependencies
+   - Provide update procedures
+   - List known issues
+
+This prompt ensures consistent, high-quality documentation creation while maintaining flexibility for different types of components and their specific requirements.
